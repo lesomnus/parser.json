@@ -11,14 +11,14 @@ namespace JSON{
 		using iterator = std::string::const_iterator;
 		using checker = decltype(isspace);
 
-		bool go_until(iterator& it, iterator& end, char is, bool what){
+		bool go_until(iterator& it, const iterator& end, char is, bool what){
 			++it;
 			while(it != end){
 				if((is == *it) == what) return true;
 				else ++it;
 			} return false;
 		}
-		bool go_until(iterator& it, iterator& end, checker is, bool what){
+		bool go_until(iterator& it, const iterator& end, checker is, bool what){
 			++it;
 			while(it != end){
 				if(is(*it) == (what ? 1 : 0)) return true;
@@ -48,7 +48,7 @@ namespace JSON{
 			return is_(it, std::string(src));
 		}
 
-		bool is_string(iterator& it, iterator& end){
+		bool is_string(iterator& it, const iterator& end){
 			if(it == end) return false;
 			auto begine = it;
 			if((*it == '\"') && go_until(it, end, '\"', true)){
@@ -58,7 +58,7 @@ namespace JSON{
 			it = begine;
 			return false;
 		}
-		bool is_number(iterator& it, iterator& end){
+		bool is_number(iterator& it, const iterator& end){
 			if(it == end) return false;
 			auto begin = it;
 			auto returner = [&it, &begin](){
@@ -91,7 +91,7 @@ namespace JSON{
 			} else return returner();
 			return true;
 		}
-		bool is_bool(iterator& it, iterator& end){
+		bool is_bool(iterator& it, const iterator& end){
 			//if(isspace(*it)) go_until(it, end, isspace, false);
 			if(it == end) return false;
 			auto begin = it;
@@ -102,10 +102,10 @@ namespace JSON{
 			return false;
 		}
 
-		bool is_array(iterator& it, iterator& end);
-		bool is_object(iterator& it, iterator& end);
+		bool is_array(iterator& it, const iterator& end);
+		bool is_object(iterator& it, const iterator& end);
 
-		bool is_elem(iterator& it, iterator& end){
+		bool is_elem(iterator& it, const iterator& end){
 			if(it == end) return false;
 			auto begin = it;
 
@@ -137,7 +137,7 @@ namespace JSON{
 			return false;
 		};
 
-		bool is_array(iterator& it, iterator& end){
+		bool is_array(iterator& it, const iterator& end){
 			if(it == end) return false;
 			auto begin = it;
 
@@ -159,7 +159,7 @@ namespace JSON{
 			it = begin;
 			return false;
 		};
-		bool is_object(iterator& it, iterator& end){
+		bool is_object(iterator& it, const iterator& end){
 			if(it == end) return false;
 			auto begin = it;
 

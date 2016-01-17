@@ -1,37 +1,17 @@
 #pragma once
 
+#include <cctype>
+#include <string>
+
+#include "json.reader.hpp"
+
 namespace JSON{
 	namespace util{
 		std::string pack(const std::string& json){
 			std::string result;
-			bool is_qScp = false; // is " scope?
-			bool is_escp = false; // is escape?
 
 			for(auto it : json){
-				if(is_qScp){
-					if(it == '\"') is_qScp = false;
-					else is_qScp = true;
-				} else{
-					is_escp = false;
-					switch(it){
-					case '\"':
-						is_qScp = true;
-						break;
-					case '\\':
-					case '\b':
-					case '\f':
-					case '\n':
-					case '\r':
-					case '\t':
-					case ' ':	// except: space
-						is_escp = true;
-						break;
-					default:
-						break;
-					}
-					if(is_escp) continue;
-				}
-
+				if(isspace(it)) continue;
 				result.push_back(it);
 			}
 

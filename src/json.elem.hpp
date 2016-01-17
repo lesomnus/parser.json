@@ -19,6 +19,15 @@ namespace JSON{
 
 		/* constructor */
 
+		elem(TYPE type, string&& value)
+			:_type(type), _value(std::move(value)){
+
+			if(type == TYPE::OBJECT)
+				_members = std::make_unique<members>();
+			else if(type == TYPE::ARRAY)
+				_elems = std::make_unique<elems>();
+		}
+
 		// copy
 
 		elem(const elem& src){
@@ -96,6 +105,8 @@ namespace JSON{
 					case TYPE::STRING:
 						val = val + "\"" + it->_value + "\"";
 						break;
+					case TYPE::OBJECT:
+						val += it->stringify();
 					default:
 						if(it->_value.empty()) val += "null";
 						else val += it->_value;
@@ -156,6 +167,11 @@ namespace JSON{
 				type_to(TYPE::OBJECT);
 			return (*_members)[std::move(key)];
 		}
+		elem& operator [] (const char* key){
+			if(_type != TYPE::OBJECT)
+				type_to(TYPE::OBJECT);
+			return (*_members)[std::move(string(key))];
+		}
 		elem& operator [] (const size_t index){
 			if(_type != TYPE::ARRAY)
 				type_to(TYPE::ARRAY);
@@ -215,12 +231,5 @@ namespace JSON{
 		>		_elems;
 		std::unique_ptr< members
 		>		_members;
-
-	public:	// static
-		static elem parse(const string& json){
-			string src = JSON::util::pack(json);
-			elem rst("qwer");
-			return rst;
-		}
 	};
 }
