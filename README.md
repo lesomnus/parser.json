@@ -14,7 +14,7 @@ Example
 #include "json.hpp"
 
 int main(){
-	using name
+	using namespace std;
 
 	auto rjson
 		= JSON::parse("								\
@@ -36,7 +36,7 @@ int main(){
 		}											\
 	}}");
 
-	std::string id = rjson["menu"]["id"];
+	string id = rjson["menu"]["id"];
 	cout << id << endl;
 
 	auto wjson = JSON::elem();
