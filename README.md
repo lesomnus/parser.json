@@ -8,7 +8,7 @@ I made this for just practice. But works good I think.
 Example
 ----------
 
-'''cpp
+```cpp
 #include <iostream>
 #include <string>
 #include "json.hpp"
@@ -49,6 +49,6 @@ int main(){
 
 	return 0;
 }
-'''
+```
 
 It's all. But I have plan to make more comportable for user.
