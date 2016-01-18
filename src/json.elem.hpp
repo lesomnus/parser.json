@@ -186,6 +186,9 @@ namespace JSON{
 
 			return (*_elems)[index];
 		}
+		elem& operator [] (const int index){
+			return (*this)[static_cast<size_t>(index)];
+		}
 
 		elem& operator = (const elem& rhs){
 			this->copy(rhs);
@@ -228,6 +231,11 @@ namespace JSON{
 			return (*this);
 		}
 
+		operator string(){ return this->_value; }
+		operator double(){ return std::stod(this->_value); }
+		operator int(){ return std::stoi(this->_value); }
+		operator bool(){ return std::stoi(this->_value) == 1; }
+		
 	private:
 		TYPE	_type;
 		string	_value;
