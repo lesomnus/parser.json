@@ -107,6 +107,7 @@ namespace JSON{
 						break;
 					case TYPE::OBJECT:
 						val += it->stringify();
+						break;
 					default:
 						if(it->_value.empty()) val += "null";
 						else val += it->_value;
@@ -117,8 +118,11 @@ namespace JSON{
 				val += "]";
 				return val;
 			} else{
-				if(_type != TYPE::STRING) return _value;
-				return std::string("\"") + _value + "\"";
+				if(_type == TYPE::STRING)
+					return std::string("\"") + _value + "\"";
+				else if(_type == TYPE::EMPTY)
+					return std::string("null");
+				else return _value;
 			}
 		}
 		void clear(){
