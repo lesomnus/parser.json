@@ -35,5 +35,3 @@ int main(){
 	return 0;
 }
 ```
-
-It's all. But I have plan to make more comportable for user.
