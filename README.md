@@ -16,34 +16,19 @@ Example
 int main(){
 	using namespace std;
 
-	auto rjson
-		= JSON::parse("								\
-	{\"menu\": {									\
-		\"id\": \"file\",							\
-			\"value\" : \"File\",					\
-			\"popup\" : {							\
-			\"menuitem\": [							\
-			{										\
-				\"value\": \"New\",					\
-				\"onclick\" : \"CreateNewDoc()\"},	\
-			{										\
-				\"value\": \"Open\",				\
-				\"onclick\" : \"OpenDoc()\"},		\
-			{										\
-				\"value\": \"Close\",				\
-				\"onclick\" : \"CloseDoc()\"}		\
-			]										\
-		}											\
-	}}");
-
-	string id = rjson["menu"]["id"];
-	cout << id << endl;
+	auto rjson = JSON::parse(fstream("example.json"));
+	cout << rjson.stringify() << endl;
 
 	auto wjson = JSON::elem();
-	wjson["a1"] = 1;
-	wjson["a2"] = 2;
-	wjson["a3"]["b"] = "ab";
-	wjson["a3"]["c"][3] = 123;
+	wjson["a"] = 1;
+	wjson["b"] = true;
+	wjson["c"] = {1,2,3};
+
+	auto subjson = JSON::elem();
+	subjson["foo"] = "bar";
+	subjson["baz"] = {1,2,"three", {1,"two", 3, 4, 5}};
+
+	wjson["d"] = subjson;
 
 	cout << wjson.stringify() << endl;
 

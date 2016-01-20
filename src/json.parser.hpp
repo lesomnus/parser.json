@@ -1,6 +1,6 @@
 #pragma once
 
-#include <iostream>
+#include <streambuf>
 #include <string>
 
 #include "json.reader.hpp"
@@ -98,5 +98,12 @@ namespace JSON{
 		else if(*begin == 'n' || *begin == 't' || *begin == 'f')
 			return parser::parse_bool(begin, end);
 		else return elem();
+	}
+
+	elem parse(const std::istreambuf_iterator<char>& char_streambuf_iterator){
+		return parse(
+			std::string(char_streambuf_iterator,
+						std::istreambuf_iterator<char>())
+			);
 	}
 }

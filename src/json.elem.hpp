@@ -5,6 +5,7 @@
 #include <vector>
 #include <unordered_map>
 #include <memory>
+#include <initializer_list>
 
 #include "json.reader.hpp"
 #include "json.util.hpp"
@@ -14,8 +15,7 @@ namespace JSON{
 	public:
 		using string = std::string;
 		using elems = std::vector<elem>;
-		using members = std::unordered_map <std::string, elem>;
-
+		using members = std::unordered_map <string, elem>;
 
 		/* constructor */
 
@@ -37,7 +37,11 @@ namespace JSON{
 			this->copy(std::move(src));
 		}
 
+		// default
+
 		elem():_type(TYPE::EMPTY){}
+
+		// val
 
 		elem(const string& value)
 			:_type(TYPE::STRING), _value(value){}
@@ -52,6 +56,11 @@ namespace JSON{
 			:_type(TYPE::FRAC), _value(std::to_string(value)){}
 		elem(const bool value)
 			:_type(TYPE::BOOL), _value(std::to_string(value)){}
+
+		elem(std::initializer_list<elem> elem_list){
+			this->type_to(TYPE::ARRAY);
+			*(this->_elems) = elem_list;
+		}
 
 		/* method */
 
@@ -95,34 +104,27 @@ namespace JSON{
 				if(!is_empty) --pend;
 
 				for(auto it = _elems->begin(); it != end; ++it){
-					switch(it->_type){
-					case TYPE::EMPTY:
-						val += "null";
-						break;
-					case TYPE::ARRAY:
-						val += it->stringify();
-						break;
-					case TYPE::STRING:
-						val = val + "\"" + it->_value + "\"";
-						break;
-					case TYPE::OBJECT:
-						val += it->stringify();
-						break;
-					default:
-						if(it->_value.empty()) val += "null";
-						else val += it->_value;
-						break;
-					}
+					val += it->stringify();
 					if(!is_empty && (it != pend)) val += ",";
 				}
 				val += "]";
 				return val;
 			} else{
-				if(_type == TYPE::STRING)
-					return std::string("\"") + _value + "\"";
-				else if(_type == TYPE::EMPTY)
-					return std::string("null");
-				else return _value;
+				switch(this->_type){
+				case TYPE::EMPTY:
+					return "null";
+				case TYPE::BOOL:
+					return std::stoi(this->_value) == 1
+						? "true"
+						: "false";
+				case TYPE::STRING:
+					return std::string("\"") + this->_value + "\"";
+				case TYPE::INT: case TYPE::FRAC: case TYPE::EXP:
+					return this->_value;
+				case TYPE::ARRAY: case TYPE::OBJECT:
+					return this->stringify();
+				default: return "";
+				}
 			}
 		}
 		void clear(){
@@ -230,12 +232,19 @@ namespace JSON{
 			_value = std::to_string(rhs);
 			return (*this);
 		}
+		elem& operator = (std::initializer_list<elem> elem_list){
+			if(this->_type != TYPE::ARRAY)
+				this->type_to(TYPE::ARRAY);
+			this->_elems->assign(elem_list);
+			return (*this);
+		}
+
 
 		operator string(){ return this->_value; }
 		operator double(){ return std::stod(this->_value); }
 		operator int(){ return std::stoi(this->_value); }
 		operator bool(){ return std::stoi(this->_value) == 1; }
-		
+
 	private:
 		TYPE	_type;
 		string	_value;
